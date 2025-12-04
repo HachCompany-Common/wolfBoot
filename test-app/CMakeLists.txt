@@ -88,7 +88,7 @@ get_filename_component(APP_LSCRIPT ${APP_LSCRIPT_TEMPLATE} NAME)
 set(APP_LSCRIPT ${CMAKE_CURRENT_BINARY_DIR}/${APP_LSCRIPT})
 
 # generate linker script for bootloader
-configure_file(${CMAKE_SOURCE_DIR}/${WOLFBOOT_LSCRIPT_TEMPLATE} ${WOLFBOOT_LSCRIPT})
+configure_file(${WOLFBOOT_ROOT}/${WOLFBOOT_LSCRIPT_TEMPLATE} ${WOLFBOOT_LSCRIPT})
 
 # generate linker script for app
 configure_file(${APP_LSCRIPT_TEMPLATE} ${APP_LSCRIPT})
