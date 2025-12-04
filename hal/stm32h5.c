@@ -277,8 +277,8 @@ static void clock_pll_on(void)
     uint32_t plln, pllm, pllq, pllp, pllr, hpre, apb1pre, apb2pre, apb3pre, flash_waitstates;
 
 #if PLL_SRC_HSE
-    pllm = 1;
-    plln = 62;
+    pllm = 5;
+    plln = 100;
     pllp = 2; /* 250Mhz */
     pllq = 5; /* 100Mhz */
     pllr = 2;
