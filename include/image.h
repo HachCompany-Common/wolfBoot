@@ -845,9 +845,9 @@ static inline int wb_flash_write(struct wolfBoot_image *img, uint32_t off,
     const void *data, uint32_t size)
 {
     if (PART_IS_EXT(img))
-        return ext_flash_check_write((uintptr_t)(img->hdr) + off, data, size);
+        return ext_flash_check_write((uintptr_t)(img->hdr) + off, (uint8_t*)data, size);
     else
-        return hal_flash_write((uintptr_t)(img->hdr) + off, data, size);
+        return hal_flash_write((uintptr_t)(img->hdr) + off, (uint8_t*)data, size);
 }
 
 static inline int wb_flash_write_verify_word(struct wolfBoot_image *img,
@@ -857,20 +857,20 @@ static inline int wb_flash_write_verify_word(struct wolfBoot_image *img,
     volatile uint32_t copy;
     if (PART_IS_EXT(img))
     {
-        ext_flash_check_read((uintptr_t)(img->hdr) + off, (void *)&copy,
+        ext_flash_check_read((uintptr_t)(img->hdr) + off, (uint8_t *)&copy,
             sizeof(uint32_t));
         while (copy != word) {
             ret = ext_flash_check_write((uintptr_t)(img->hdr) + off,
-                (void *)&word, sizeof(uint32_t));
+                (uint8_t *)&word, sizeof(uint32_t));
             if (ret < 0)
                 return ret;
-            ext_flash_check_read((uintptr_t)(img->hdr) + off, (void *)&copy,
+            ext_flash_check_read((uintptr_t)(img->hdr) + off, (uint8_t *)&copy,
                 sizeof(uint32_t));
         }
     } else {
         volatile uint32_t *pcopy = (volatile uint32_t*)(img->hdr + off);
         while(*pcopy != word) {
-            hal_flash_write((uintptr_t)pcopy, (void *)&word, sizeof(uint32_t));
+            hal_flash_write((uintptr_t)pcopy, (uint8_t *)&word, sizeof(uint32_t));
         }
     }
     return 0;
