@@ -1365,27 +1365,31 @@ target_include_directories(target BEFORE INTERFACE
 #---------------------------------------------------------------------------------------------
 # keystore
 #---------------------------------------------------------------------------------------------
-set(KEYSTORE ${CMAKE_CURRENT_BINARY_DIR}/keystore.c)
 if(NOT SIGN STREQUAL "NONE")
-    add_custom_target(keystore DEPENDS ${KEYGEN_TOOL} ${KEYSTORE})
+    if(NOT DEFINED KEYSTORE)
+        # generate keystore.c if it was not given in a setting
+        set(KEYSTORE ${CMAKE_CURRENT_BINARY_DIR}/keystore.c)
 
-    # generate keystore.c if it does not already exist
-    message(STATUS "Will generate fresh: ${KEYSTORE}")
-    message(STATUS "  with KEYGEN_TOOL:  ${KEYGEN_TOOL}")
-    message(STATUS "  and options:       ${KEYTOOL_OPTIONS}")
-    message(STATUS "  with key file:     ${WOLFBOOT_SIGNING_PRIVATE_KEY}")
+        add_custom_target(keystore DEPENDS ${KEYGEN_TOOL} ${KEYSTORE})
 
-    add_custom_command(
-        OUTPUT ${KEYSTORE} ${WOLFBOOT_SIGNING_PRIVATE_KEY}
-        COMMAND "${KEYGEN_TOOL}" ${KEYTOOL_OPTIONS}
-                --no-overwrite
-                -g ${WOLFBOOT_SIGNING_PRIVATE_KEY}
-                -keystoreDir ${CMAKE_CURRENT_BINARY_DIR}
-        DEPENDS ${KEYGEN_TOOL}
-        WORKING_DIRECTORY ${WOLFBOOT_ROOT}
-        COMMENT "Generating keystore.c and signing private key"
-        VERBATIM
-    )
+        message(STATUS "Will generate fresh: ${KEYSTORE}")
+        message(STATUS "  with KEYGEN_TOOL:  ${KEYGEN_TOOL}")
+        message(STATUS "  and options:       ${KEYTOOL_OPTIONS}")
+        message(STATUS "  with key file:     ${WOLFBOOT_SIGNING_PRIVATE_KEY}")
+
+        add_custom_command(
+            OUTPUT ${KEYSTORE} ${WOLFBOOT_SIGNING_PRIVATE_KEY}
+            COMMAND "${KEYGEN_TOOL}" ${KEYTOOL_OPTIONS}
+                    --no-overwrite
+                    -g ${WOLFBOOT_SIGNING_PRIVATE_KEY}
+                    -keystoreDir ${CMAKE_CURRENT_BINARY_DIR}
+            DEPENDS ${KEYGEN_TOOL}
+            WORKING_DIRECTORY ${WOLFBOOT_ROOT}
+            COMMENT "Generating keystore.c and signing private key"
+            VERBATIM
+        )
+
+    endif()
 
     add_library(public_key)
     target_sources(public_key PRIVATE ${KEYSTORE})
@@ -1395,7 +1399,10 @@ if(NOT SIGN STREQUAL "NONE")
 
     # Ensure the tool exists before anything tries to build public_key,
     # and also make the explicit custom target a dependency if you like:
-    add_dependencies(public_key keygen_build keystore)
+    add_dependencies(public_key keygen_build)
+    if(TARGET keystore)
+        add_dependencies(public_key keystore)
+    endif()
 endif()
 
 # generate libwolfboot

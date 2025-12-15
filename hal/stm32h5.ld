@@ -26,13 +26,6 @@ SECTIONS
         *(.ARM.exidx*)
     } > FLASH
 
-    .gnu.sgstubs :
-    {
-        . = ALIGN(32);
-        *(.gnu.sgstubs*)   /* Secure Gateway stubs */
-        . = ALIGN(4);
-    } > FLASH_NSC
-
     _stored_data = .;
     .data : AT (_stored_data)
     {
@@ -43,6 +36,13 @@ SECTIONS
         . = ALIGN(8);
         _end_data = .;
     } > RAM
+
+    .gnu.sgstubs :
+    {
+        . = ALIGN(32);
+        *(.gnu.sgstubs*)   /* Secure Gateway stubs */
+        . = ALIGN(4);
+    } > FLASH_NSC
 
     .bss (NOLOAD) :
     {
