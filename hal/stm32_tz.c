@@ -241,9 +241,9 @@ void hal_gtzc_init(void)
         SET_GTZC1_MPCBBx_SECCFGR_VCTR(1, i, 0xFFFFFFFF);
     }
 
-    /* Configure SRAM2 as secure (64 KB) */
+    /* Configure SRAM2 as non-secure (64 KB) */
     for (i = 0; i < 4; i++) {
-        SET_GTZC1_MPCBBx_SECCFGR_VCTR(2, i, 0xFFFFFFFF);
+        SET_GTZC1_MPCBBx_SECCFGR_VCTR(2, i, 0x0);
     }
 
     /* Configure SRAM3 as non-secure (320 KB) */
@@ -295,32 +295,32 @@ void hal_gtzc_init(void)
 
 void hal_tz_sau_init(void)
 {
-    /* SAU is set up before staging. Set up all areas as secure. */
+    /* SAU is set up before staging. Any area not in the list below is secure. */
 
     /* Non-secure callable: NSC functions area */
     sau_init_region(0, WOLFBOOT_NSC_ADDRESS,
             WOLFBOOT_NSC_ADDRESS + WOLFBOOT_NSC_SIZE - 1, 1);
 
-    /* Secure: application flash area (first bank) */
+    /* Non-secure: application flash area (first bank) */
     sau_init_region(1, WOLFBOOT_PARTITION_BOOT_ADDRESS, FLASH_BANK2_BASE - 1, 0);
 
-    /* Secure: application flash area (second bank) */
-    sau_init_region(2, WOLFBOOT_PARTITION_UPDATE_ADDRESS, FLASH_TOP, 0);
+    /* Non-secure: application flash area (second bank) */
+    sau_init_region(2, FLASH_BANK2_BASE, FLASH_TOP, 0);
 
-    /* Secure RAM regions in SRAM1/SRAM2 */
-    sau_init_region(3, 0x30000000, 0x3004FFFF, 1);
+    /* Non-secure: RAM regions in SRAM1/SRAM2 */
+    sau_init_region(3, 0x30000000, 0x3003FFFF, 1);
 
     /* Non-secure RAM region in SRAM3 */
-    sau_init_region(4, 0x20050000, 0x2008FFFF, 0);
+    sau_init_region(4, 0x20040000, 0x2009FFFF, 0);
 
     /* Non-secure: internal peripherals */
     sau_init_region(5, 0x40000000, 0x4FFFFFFF, 0);
 
-    /* Secure mapped peripherals */
-    sau_init_region(6, 0x50000000, 0x5FFFFFFF, 1);
-
     /* Set as non-secure: OTP + RO area */
-    sau_init_region(7, 0x08FFF000, 0x08FFFFFF, 0);
+    sau_init_region(6, 0x08FFF000, 0x08FFFFFF, 0);
+
+    /* Non-secure: OCTOSPI mapped area */
+    sau_init_region(7, 0x90000000, 0x9fffffff, 0);
 
     /* Enable SAU */
     SAU_CTRL = SAU_INIT_CTRL_ENABLE;
