@@ -327,6 +327,11 @@ void hal_tz_sau_init(void)
 
     /* Enable securefault handler */
     SCB_SHCSR |= SCB_SHCSR_SECUREFAULT_EN;
+
+    /* Set the OCTOSPI mapped region as nonsecure */
+    RCC_AHB1_CLOCK_ER |= TZSC1_AHB1_CLOCK_ER;
+    TZSC_MPCWM1CFGR = TZSC_MPCWM1CFGR_EN;
+    TZSC_MPCWM1AR = 0x08000000;
 }
 
 #else

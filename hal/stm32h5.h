@@ -242,6 +242,11 @@
 #define TZSC_SECCFGR2   *((volatile uint32_t *)(0x50036414))
 #define TZSC_SECCFGR2_LPUART1SEC (1 << 25) /* LPUART1 */
 
+#define TZSC_MPCWM1CFGR *((volatile uint32_t *)(0x50032440))
+#define TZSC_MPCWM1CFGR_EN (1 << 0)
+
+#define TZSC_MPCWM1AR   *((volatile uint32_t *)(0x50032444))
+
 /* Mapping FLASH_SECCR for bank swapping */
 #define FLASH_CCR            (*(volatile uint32_t *)(FLASH_BASE + 0x34))
 
@@ -383,6 +388,8 @@
 #define GPIOD_AFL   (*(volatile uint32_t *)(GPIOD_BASE + 0x20))
 #define GPIOD_AFH   (*(volatile uint32_t *)(GPIOD_BASE + 0x24))
 
+#define RCC_AHB1_CLOCK_ER (*(volatile uint32_t *)(RCC_BASE + 0x88 ))
+#define TZSC1_AHB1_CLOCK_ER (1 << 24)
 
 /* RCC AHB2 Clock Enable Register */
 #define RCC_AHB2_CLOCK_ER (*(volatile uint32_t *)(RCC_BASE + 0x8C ))
