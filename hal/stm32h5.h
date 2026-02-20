@@ -519,6 +519,15 @@
 #define SYSTICK_CVR     (*(volatile uint32_t *)(SYSTICK_BASE + 0x08))
 #define SYSTICK_CALIB   (*(volatile uint32_t *)(SYSTICK_BASE + 0x0C))
 
+/* ICache */
+#define ICACHE_BASE (PERIPH_BASE + 0x30400)
+#define ICACHE_CR   (*(volatile uint32_t *)(ICACHE_BASE + 0x00))
+#define ICACHE_SR   (*(volatile uint32_t *)(ICACHE_BASE + 0x04))
+
+#define ICACHE_CR_CACHEINV (1 << 1)
+
+#define ICACHE_SR_BSYENDF (1 << 1)
+
 /* NVIC */
 #define NVIC_ISER_BASE (0xE000E100)
 #define NVIC_ICER_BASE (0xE000E180)

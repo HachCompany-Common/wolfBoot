@@ -149,6 +149,11 @@ int RAMFUNCTION hal_flash_write(uint32_t address, const uint8_t *data, int len)
         hal_tz_release_nonsecure_area();
     }
 #endif
+
+    ICACHE_CR |= ICACHE_CR_CACHEINV;
+    while(!(ICACHE_SR & ICACHE_SR_BSYENDF))
+        ;
+
     return 0;
 }
 
