@@ -519,5 +519,14 @@
 #define SYSTICK_CVR     (*(volatile uint32_t *)(SYSTICK_BASE + 0x08))
 #define SYSTICK_CALIB   (*(volatile uint32_t *)(SYSTICK_BASE + 0x0C))
 
+/* NVIC */
+#define NVIC_ISER_BASE (0xE000E100)
+#define NVIC_ICER_BASE (0xE000E180)
+#define NVIC_IPRI_BASE (0xE000E400)
+#define NVIC_USART3_IRQ 60
+#define NVIC_ETH_IRQ 106
+
+/* Cortex M-33 has an extra register to set up non-secure interrupts */
+#define NVIC_ITNS_BASE (0xE000E380)
 
 #endif /* STM32H5_DEF_INCLUDED */

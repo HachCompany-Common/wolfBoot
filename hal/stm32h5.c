@@ -427,16 +427,9 @@ static void clock_pll_on(void)
 
 #if (TZ_SECURE())
 
-#define NVIC_ISER_BASE (0xE000E100)
-#define NVIC_ICER_BASE (0xE000E180)
-#define NVIC_IPRI_BASE (0xE000E400)
-#define NVIC_USART3_IRQ 60
-
-/* Cortex M-33 has an extra register to set up non-secure interrupts */
-#define NVIC_ITNS_BASE (0xE000E380)
-
-
-
+#ifdef WOLF_EXT_UNSECURE
+extern void periph_unsecure(void);
+#else
 static void periph_unsecure(void)
 {
     volatile uint32_t reg;
@@ -490,6 +483,7 @@ static void periph_unsecure(void)
     nvic_itns = ((volatile uint32_t *)(NVIC_ITNS_BASE + 4 * nvic_reg_pos));
     *nvic_itns |= (1 << nvic_reg_off);
 }
+#endif /* WOLF_EXT_UNSECURE */
 #endif /* TZ_SECURE() */
 
 
