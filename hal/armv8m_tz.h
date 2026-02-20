@@ -42,6 +42,14 @@
 #define SCB_SHCSR     (*(volatile uint32_t *)(0xE000ED24))
 #define SCB_SHCSR_SECUREFAULT_EN            (1<<19)
 
+#define SCB_CPACR (*(volatile uint32_t *)(0xE000ED88)) /** SCP_CPACR - coprocessor access control register **/
+#define SCB_CPACR_CP10_FULL_ACCESS (3 << 20)
+#define SCB_CPACR_CP11_FULL_ACCESS (3 << 22)
+
+#define SCB_NSACR (*(volatile uint32_t *)(0xE000ED8C)) /** SAU_NSACR - non-secure access control register **/
+#define SCB_NSACR_CP10_NS_ALLOWED (1 << 10)
+#define SCB_NSACR_CP11_NS_ALLOWED (1 << 11)
+
 static inline void sau_init_region(uint32_t region, uint32_t start_addr,
         uint32_t end_addr, int secure)
 {
