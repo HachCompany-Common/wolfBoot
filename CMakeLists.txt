@@ -1054,8 +1054,36 @@ add_library(user_settings INTERFACE)
 target_compile_definitions(user_settings INTERFACE ${USER_SETTINGS} ${SIGN_OPTIONS})
 
 add_library(wolfboothal)
-target_sources(wolfboothal PRIVATE include/hal.h hal/${WOLFBOOT_TARGET}.c ${WOLFBOOT_FLASH_SOURCES}
-                                   ${PARTITION_SOURCE})
+if(TZEN)
+    set(TZ_SOURCES src/pkcs11_store.c
+                   src/pkcs11_callable.c
+                   hal/stm32_tz.c
+                   src/wc_callable.c
+                   lib/wolfPKCS11/src/crypto.c
+                   lib/wolfPKCS11/src/internal.c
+                   lib/wolfPKCS11/src/slot.c
+                   lib/wolfPKCS11/src/wolfpkcs11.c
+                   lib/wolfssl/wolfcrypt/src/aes.c
+                   lib/wolfssl/wolfcrypt/src/asn.c
+                   lib/wolfssl/wolfcrypt/src/hash.c
+                   lib/wolfssl/wolfcrypt/src/hmac.c
+                   lib/wolfssl/wolfcrypt/src/rsa.c
+                   lib/wolfssl/wolfcrypt/src/sha512.c
+                   lib/wolfssl/wolfcrypt/src/ecc.c
+                   lib/wolfssl/wolfcrypt/src/pwdbased.c
+                   lib/wolfssl/wolfcrypt/src/wc_port.c)
+
+    if(WOLFBOOT_EXT_UNSECURE_FILE)
+        list(APPEND TZ_SOURCES ${WOLFBOOT_EXT_UNSECURE_FILE})
+    endif()
+else()
+    set(TZ_SOURCES "")
+endif()
+target_sources(wolfboothal PRIVATE include/hal.h
+               hal/${WOLFBOOT_TARGET}.c
+               ${TZ_SOURCES}
+               ${WOLFBOOT_FLASH_SOURCES}
+               ${PARTITION_SOURCE})
 
 
 #---------------------------------------------------------------------------------------------
@@ -1359,7 +1387,8 @@ add_library(target INTERFACE)
 target_compile_definitions(target INTERFACE ${WOLFBOOT_DEFS})
 target_include_directories(target BEFORE INTERFACE
                                     ${CMAKE_CURRENT_BINARY_DIR}
-                                    ${CMAKE_CURRENT_SOURCE_DIR}/lib/wolfssl)
+                                    ${CMAKE_CURRENT_SOURCE_DIR}/lib/wolfssl
+                                    ${CMAKE_CURRENT_SOURCE_DIR}/lib/wolfPKCS11)
 
 
 #---------------------------------------------------------------------------------------------

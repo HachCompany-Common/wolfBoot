@@ -177,6 +177,11 @@ endif()
 # Include SHA256 module because it's implicitly needed by RSA
 list(APPEND WOLFCRYPT_SOURCES wolfssl/wolfcrypt/src/sha256.c)
 
+list(APPEND WOLFCRYPT_SOURCES wolfssl/wolfcrypt/src/random.c)
+
+# fix for enabling WOLFCRYPT_TZ_PKCS11 in CMake
+list(APPEND WOLFCRYPT_SOURCES wolfssl/wolfcrypt/src/pwdbased.c wolfssl/wolfcrypt/src/hmac.c wolfssl/wolfcrypt/src/dh.c)
+
 list(APPEND WOLFCRYPT_INCLUDE_DIRS PUBLIC ${CMAKE_CURRENT_LIST_DIR}/wolfssl
      ${WOLFBOOT_ROOT}/include)
 
