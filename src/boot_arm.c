@@ -460,6 +460,8 @@ void RAMFUNCTION do_boot(const uint32_t *app_offset)
     asm volatile("cpsie i");
     asm volatile("blxns   r7" );
 #   else
+    /* Re-enable interrupts to allow OS handlers */
+    asm volatile("cpsie i");
     asm volatile("msr msp, %0" ::"r"(app_end_stack));
     asm volatile("mov pc, %0":: "r"(app_entry));
 #   endif
