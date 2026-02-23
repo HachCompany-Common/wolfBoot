@@ -236,9 +236,13 @@ void hal_gtzc_init(void)
      * 0: Non-secure access only to block
      */
 
-    /* Configure SRAM1 as secure (Low 256 KB) */
-    for (i = 0; i < 16; i++) {
+    /* Configure SRAM1 as secure (Low 128 KB) */
+    for (i = 0; i < 8; i++) {
         SET_GTZC1_MPCBBx_SECCFGR_VCTR(1, i, 0xFFFFFFFF);
+    }
+
+    for (i = 8; i < 16; i++) {
+        SET_GTZC1_MPCBBx_SECCFGR_VCTR(1, i, 0x0);
     }
 
     /* Configure SRAM2 as non-secure (64 KB) */
@@ -308,7 +312,7 @@ void hal_tz_sau_init(void)
     sau_init_region(2, FLASH_BANK2_BASE, FLASH_TOP, 0);
 
     /* Non-secure: RAM regions in SRAM1/SRAM2 */
-    sau_init_region(3, 0x30000000, 0x3003FFFF, 1);
+    sau_init_region(3, 0x20020000, 0x2003FFFF, 0);
 
     /* Non-secure RAM region in SRAM3 */
     sau_init_region(4, 0x20040000, 0x2009FFFF, 0);
